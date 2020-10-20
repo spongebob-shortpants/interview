@@ -9,7 +9,45 @@ import java.util.LinkedList;
  */
 public class SlidingWindowMaximum {
 
-    public int[] maxSlidingWindow(int[] nums, int k) {
+    public int[] maxSlidingWindow2(int[] nums, int k) {
+
+        if (nums == null || nums.length == 0 || k < 1) return new int[0];
+        if (k == 1) return nums;
+
+        int[] maxes = new int[nums.length - k + 1];
+
+        //记录当前窗口中的最大值索引
+        int maxIndex = 0;
+
+        //先求出第一个窗口中k个元素的最大值索引
+        for (int i = 1; i < k; i++) {
+            if (nums[i] > nums[maxIndex]) maxIndex = i;
+        }
+
+        for (int li = 0; li < maxes.length; li++) {
+            //li驱动ri的移动
+            int ri = li + k - 1;
+            if (maxIndex < li) { //最大值索引已经过期
+                //需要老老实实的求出li～ri之间最大值索引
+                maxIndex = li;
+                for (int i = li+1; i <= ri ; i++) {
+                    if (nums[i] > nums[maxIndex]) maxIndex = i;
+                }
+            }
+
+            //最大值索引仍旧在窗口合法范围内（最大值索引没有过期）
+            else if (nums[ri] >= nums[maxIndex]) {
+                maxIndex = ri;
+            }
+
+            maxes[li] = nums[maxIndex];
+
+        }
+
+        return maxes;
+
+    }
+        public int[] maxSlidingWindow(int[] nums, int k) {
 
         if (nums == null || nums.length == 0 || k < 1)  return new int[0];
         if (k == 1) return nums;
